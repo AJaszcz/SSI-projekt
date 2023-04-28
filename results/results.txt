@@ -1,4 +1,42 @@
-Cros-val:
-    normal: array([0.96436526, 0.95545657, 0.97327394, 0.96213808]) k=7
-    representants: array([0.91759465, 0.91536748, 0.9376392 , 0.90423163]) k=2
-    projection: array([0.73496659, 0.75946548, 0.81737194, 0.82628062]) k=2
+Base fit: 0.0 s
+ Representatives fit: 0.015625 s
+ Projection fit: 0.0 s
+
+WARNING! Cannot divide given dataset equally into 4 parts. Ignoring last 1 elements!
+ Base cross: 19.875 s
+WARNING! Cannot divide given dataset equally into 4 parts. Ignoring last 1 elements!
+ Representatives cross: 1.25 s
+WARNING! Cannot divide given dataset equally into 4 parts. Ignoring last 1 elements!
+ Projection cross: 19.53125 s
+
+Accuracy:
+cross Base n=7: [96.44, 95.55, 97.33, 96.21]
+with mean acc: 96.38
+cross Representatives n=2: [91.76, 91.54, 93.76, 90.42]
+with mean acc: 91.87
+cross Projection n=2: [73.5, 75.95, 81.74, 82.63]
+with mean acc: 78.45
+
+Precision:
+cross Base n=7: [96.54, 95.58, 97.4, 96.25]
+with mean precision: 96.44
+cross Representatives n=2: [92.44, 92.04, 93.93, 90.72]
+with mean precision: 92.28
+cross Projection n=2: [74.63, 76.03, 82.15, 82.59]
+with mean precision: 78.85
+
+Recall:
+cross Base n=7: [96.43, 95.53, 97.39, 96.14]
+with mean recall: 96.37
+cross Representatives n=2: [91.69, 91.47, 93.89, 90.41]
+with mean recall: 91.87
+cross Projection n=2: [73.83, 75.67, 81.93, 82.4]
+with mean recall: 78.46
+
+f1-score:
+cross Base n=7: [96.41, 95.52, 97.39, 96.1]
+with mean f1-score: 96.36
+cross Representatives n=2: [91.81, 91.5, 93.88, 90.32]
+with mean f1-score: 91.88
+cross Projection n=2: [73.54, 75.54, 81.82, 82.13]
+with mean f1-score: 78.26

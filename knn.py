@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from sklearn.metrics import precision_score,recall_score,f1_score
 
 class KNN():
     def __init__(self,n_neighbours=4, representatives=False, collapse=False):
@@ -12,10 +13,8 @@ class KNN():
     def fit(self, X_train, Y_train):
         if self.representatives:
             self.X_train, self.Y_train = create_representatives(X_train,Y_train)
-            print(self.X_train.shape)
         else:
             self.X_train = X_train
-            print(self.X_train.shape)
             self.Y_train = Y_train
         if self.collapse:
             self.collapse = True
@@ -77,12 +76,18 @@ class KNN():
         correct = 0
         # number of classes
         confusion_matrix = np.zeros([10,10],dtype=int)
+        metrics= np.zeros((3),dtype=float)
         #accuracy
-        for predicted,actual in zip(self.predict(X),y):
+        predicted_lables = self.predict(X)
+        for predicted,actual in zip(predicted_lables,y):
             if predicted==actual:
                 correct+=1
-            confusion_matrix[predicted][actual]+=1
-        return correct/len(y), confusion_matrix
+            confusion_matrix[actual][predicted]+=1
+
+        metrics[0] = precision_score(y,predicted_lables,average="macro")
+        metrics[1]  = recall_score(y,predicted_lables,average="macro")
+        metrics[2] = f1_score(y,predicted_lables,average="macro")
+        return correct/len(y), confusion_matrix,metrics
     
     def score_for_n_in_range(self,X,y,n_range):
         if self.collapse:
@@ -91,6 +96,7 @@ class KNN():
         
         # number of classes
         confusion_matrix = np.zeros([n_range,10,10],dtype=int)
+        # metrics= np.zeros([n_range,3],dtype=float)
         #accuracy
         i = 0   # im a lazy ass
         for predicted_column in self.predict_for_n_in_range(X,n_range).T:
@@ -98,9 +104,12 @@ class KNN():
             for predicted, actual in zip(predicted_column,y):
                 if predicted==actual:
                     correct+=1
-                confusion_matrix[i][predicted][actual]+=1
+                confusion_matrix[i][actual][predicted]+=1   #jak w sklearn
+            # metrics[i][0] = precision_score(y,predicted_column,average="macro")
+            # metrics[i][1]  = recall_score(y,predicted_column,average="macro")
+            # metrics[i][2] = f1_score(y,predicted_column,average="macro")
             score[i]=correct/len(y)
-            i+=1    
+            i+=1
         return score,confusion_matrix
     
     def cross_val_score(self,X,Y, n_folds=4):
@@ -117,6 +126,8 @@ class KNN():
         
         # accuracy
         scores = np.empty(n_folds,dtype=float)
+        cm= np.empty([n_folds,10,10],dtype=int)
+        metrics = np.zeros([n_folds,3],dtype=float)
 
         for i in range(n_folds):
             X_train = X_sets.copy()
@@ -126,8 +137,8 @@ class KNN():
 
             model.fit(np.concatenate(X_train),
                       np.concatenate(Y_train))
-            scores[i],_ = model.score(X_val,Y_val)
-        return scores
+            scores[i],cm[i],metrics[i] = model.score(X_val,Y_val)
+        return scores,cm,metrics
 
 # def create_representatives(X,Y):
 #     n_classes = np.zeros(10,dtype=int)  # number of classes
