@@ -3,11 +3,11 @@ import math
 from sklearn.metrics import precision_score,recall_score,f1_score
 
 class KNN():
-    def __init__(self,n_neighbours=4, representatives=False, collapse=False):
+    def __init__(self,n_neighbours=4, representatives=False, project=False):
         self.n_neighbours = n_neighbours
-        # rzutowanie
+        # projection
         self.representatives = representatives
-        self.collapse = collapse
+        self.project = project
         pass
 
     def fit(self, X_train, Y_train):
@@ -16,12 +16,12 @@ class KNN():
         else:
             self.X_train = X_train
             self.Y_train = Y_train
-        if self.collapse:
-            self.collapse = True
-            self.X_train = self.collapse_datapoints(X_train)
+        if self.project:
+            self.project = True
+            self.X_train = self.project_datapoints(X_train)
     
     @staticmethod
-    def collapse_datapoints(X):
+    def project_datapoints(X):
         return np.mean(X,axis=2)
 
     def predict_datapoint(self, datapoint):
@@ -71,8 +71,8 @@ class KNN():
         return predicted
     
     def score(self,X,y):
-        if self.collapse:
-            X = self.collapse_datapoints(X)
+        if self.project:
+            X = self.project_datapoints(X)
         correct = 0
         # number of classes
         confusion_matrix = np.zeros([10,10],dtype=int)
@@ -90,8 +90,8 @@ class KNN():
         return correct/len(y), confusion_matrix,metrics
     
     def score_for_n_in_range(self,X,y,n_range):
-        if self.collapse:
-            X = self.collapse_datapoints(X)
+        if self.project:
+            X = self.project_datapoints(X)
         score = np.zeros(n_range,dtype=np.float32)
         
         # number of classes
@@ -105,9 +105,6 @@ class KNN():
                 if predicted==actual:
                     correct+=1
                 confusion_matrix[i][actual][predicted]+=1   #jak w sklearn
-            # metrics[i][0] = precision_score(y,predicted_column,average="macro")
-            # metrics[i][1]  = recall_score(y,predicted_column,average="macro")
-            # metrics[i][2] = f1_score(y,predicted_column,average="macro")
             score[i]=correct/len(y)
             i+=1
         return score,confusion_matrix
@@ -122,7 +119,7 @@ class KNN():
         # nowy model, aby nie ndapisywac fit
         model = KNN(self.n_neighbours, 
                     self.representatives, 
-                    self.collapse)
+                    self.project)
         
         # accuracy
         scores = np.empty(n_folds,dtype=float)
@@ -139,28 +136,6 @@ class KNN():
                       np.concatenate(Y_train))
             scores[i],cm[i],metrics[i] = model.score(X_val,Y_val)
         return scores,cm,metrics
-
-# def create_representatives(X,Y):
-#     n_classes = np.zeros(10,dtype=int)  # number of classes
-#     for y in Y:
-#         n_classes[y]+=1
-    
-#     X_sorted = [x for _,x in sorted(zip(Y,X),key=lambda el : el[0])]    # sortuje wg etykiet
-    
-#     index_x=0
-#     class_representants = []
-#     for n in n_classes:
-#         n_representatives = math.ceil(math.log2(n))
-#         representatives = np.empty((n_representatives),dtype=type(X_sorted[0]))
-#         #todo fix
-#         for i in range(n_representatives):
-#             print(index_x+(i+1)*n_representatives-(index_x+i*n_representatives))
-#             representatives[i]=sum(X_sorted[index_x+i*n_representatives     :    index_x+(i+1)*n_representatives])//n_representatives
-#         #representatives[n_representatives-1] = sum(X_sorted[index_x+(n_representatives-1)*n_representatives     :   index_x+n_representatives*n_representatives+(n_representatives*n_representatives-n)])//(n_representatives*n_representatives-n)
-#         index_x+=n
-#         for el in representatives:
-#             class_representants.append(el)
-#     return np.array(class_representants,dtype=int), np.ravel([np.full((math.ceil(math.log2(n))),i,dtype=int) for i in range(10)])  # wtf is this piece of shit
 
 def create_representatives(X,Y):
     n_classes = np.zeros(10,dtype=int)  # number of classes
