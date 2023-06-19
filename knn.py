@@ -3,9 +3,8 @@ import math
 from sklearn.metrics import precision_score,recall_score,f1_score
 
 class KNN():
-    def __init__(self,n_neighbours=4, representatives=False, project=False):
+    def __init__(self,n_neighbours=5, representatives=False, project=False):
         self.n_neighbours = n_neighbours
-        # projection
         self.representatives = representatives
         self.project = project
         pass
@@ -64,7 +63,7 @@ class KNN():
             predicted[i]=self.predict_datapoint(X[i])
         return predicted
     
-    def predict_for_n_in_range(self,X,n_range):
+    def predict_for_n_in_range(self,X,n_range): #
         predicted = np.empty([len(X),n_range],dtype=int)
         for i in range(len(X)):
             predicted[i]=self.predict_datapoint_for_n_in_range(X[i],n_range)
@@ -94,17 +93,17 @@ class KNN():
             X = self.project_datapoints(X)
         score = np.zeros(n_range,dtype=np.float32)
         
-        # number of classes
+        # creates empty cm with fixed 10 number of classes
         confusion_matrix = np.zeros([n_range,10,10],dtype=int)
-        # metrics= np.zeros([n_range,3],dtype=float)
-        #accuracy
-        i = 0   # im a lazy ass
+
+        #accuracy score
+        i = 0 
         for predicted_column in self.predict_for_n_in_range(X,n_range).T:
             correct = 0
             for predicted, actual in zip(predicted_column,y):
                 if predicted==actual:
                     correct+=1
-                confusion_matrix[i][actual][predicted]+=1   #jak w sklearn
+                confusion_matrix[i][actual][predicted]+=1   # the same way sklearn produces CM
             score[i]=correct/len(y)
             i+=1
         return score,confusion_matrix
@@ -116,7 +115,7 @@ class KNN():
         X_sets = np.split(X[:-rest],n_folds)
         Y_sets = np.split(Y[:-rest],n_folds)
 
-        # nowy model, aby nie ndapisywac fit
+        # create new model, not to overwrite current fit
         model = KNN(self.n_neighbours, 
                     self.representatives, 
                     self.project)
@@ -141,22 +140,20 @@ def create_representatives(X,Y):
     n_classes = np.zeros(10,dtype=int)  # number of classes
     for y in Y:
         n_classes[y]+=1
-    
-    X_sorted = [x for _,x in sorted(zip(Y,X),key=lambda el : el[0])]    # sortuje wg etykiet
+
+    # sorts accoring to labels
+    X_sorted = [x for _,x in sorted(zip(Y,X),key=lambda el : el[0])]
     
     index_x=0
     class_representants = []
     for n in n_classes:
-        n_representatives = math.ceil(math.log2(n))
+        n_representatives = math.ceil(math.log2(n)) # eq. 1
         representatives = np.empty((n_representatives),dtype=type(X_sorted[0]))
-        #todo fix
-        step = math.ceil(n/n_representatives)
+        step = math.ceil(n/n_representatives) # eq. 2
         for i in range(n_representatives-1):
-            #print(index_x+(i+1)*step-(index_x+i*step))
             representatives[i]=sum(X_sorted[index_x+i*step     :    index_x+(i+1)*step])//step
-        representatives[n_representatives-1] = sum(X_sorted[index_x+(n_representatives-1)*step     :    index_x+n])//(n-(n_representatives-1)*step)
-        #representatives[n_representatives-1] = sum(X_sorted[index_x+(n_representatives-1)*n_representatives     :   index_x+n_representatives*n_representatives+(n_representatives*n_representatives-n)])//(n_representatives*n_representatives-n)
+        representatives[n_representatives-1] = sum(X_sorted[index_x+(n_representatives-1)*step     :    index_x+n])//(n-(n_representatives-1)*step) # eq. 4
         index_x+=n
         for el in representatives:
             class_representants.append(el)
-    return np.array(class_representants,dtype=int), np.ravel([np.full((math.ceil(math.log2(n))),i,dtype=int) for i in range(10)])  # wtf is this piece of shit
+    return np.array(class_representants,dtype=int), np.ravel([np.full((math.ceil(math.log2(n))),i,dtype=int) for i in range(10)])
