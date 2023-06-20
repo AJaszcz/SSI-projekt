@@ -9,11 +9,11 @@ W naszym projekcie zdecydowaliśmy się na użycie algorytmu k-najbliższych są
 1. Tworzenie reprezentantów klas
 2. Rzutowanie kolumn
 
-Utworzony klasyfikator znajduje się w skrypcie [knn.py](https://github.com/AJaszcz/SSI-projekt/tree/master), natomiast jego demonstracja i utworzone wyniki są w notebooku [knn_project.ipynb](https://github.com/AJaszcz/SSI-projekt/tree/master).
+Utworzony klasyfikator znajduje się w skrypcie [knn.py](https://github.com/AJaszcz/SSI-projekt/tree/master/knn.py), natomiast jego demonstracja i utworzone wyniki są w notebooku [knn_project.ipynb](https://github.com/AJaszcz/SSI-projekt/tree/master/knn_project.ipynb).
 
 ## Dokumentacja
 
-Pełna dokumentacja projektu znajduje się w [Dokumentacja.pdf](https://github.com/AJaszcz/SSI-projekt/tree/master/ProjectDocumentation_(SSI)(PL)).
+Pełna dokumentacja projektu znajduje się w [Dokumentacja.pdf](https://github.com/AJaszcz/SSI-projekt/tree/master/ProjectDocumentation_(SSI)(PL)/Dokumentacja.pdf).
 
 ## Autorzy
 
@@ -29,7 +29,7 @@ This repository containes all data, source-code and results used in the paper.
 
 ## Documantation
 
-Full documentation is in [Handwritten_digit_recognition_by_average_representatives_clustering.pdf](https://github.com/AJaszcz/SSI-projekt/tree/master/ProjectDocumentation_(SYSTEM2023)(EN)).
+Full documentation is in [Handwritten_digit_recognition_by_average_representatives_clustering.pdf](https://github.com/AJaszcz/SSI-projekt/tree/master/ProjectDocumentation_(SYSTEM2023)(EN)/Handwritten_digit_recognition_by_average_representatives_clustering.pdf).
 
 ## Authors
 
